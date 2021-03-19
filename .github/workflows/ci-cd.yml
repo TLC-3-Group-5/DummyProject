@@ -18,23 +18,28 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Make Maven script executable
-        run: chmod +x ./mvnw
       - name: Build with Maven
         run: mvn -B package --file pom.xml
+      - name: Upload built jar
+        uses: actions/upload-artifact@v2
+        with:
+          name: application-jar
+          path: target/*.jar
 
   dockerize-and-push:
     name: Dockerize and push
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: Download built jar
+        uses: actions/download-artifact@v2
+        with:
+          name: application-jar
       - name: Login to Heroku Container Registry
         env: 
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:login
-      - name: Build and push
+      - name: Build image and push
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} web
