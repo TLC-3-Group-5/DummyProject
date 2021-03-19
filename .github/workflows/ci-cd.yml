@@ -31,10 +31,13 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Download built jar
         uses: actions/download-artifact@v2
         with:
           name: application-jar
+          path: target
       - name: Login to Heroku Container Registry
         env: 
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
