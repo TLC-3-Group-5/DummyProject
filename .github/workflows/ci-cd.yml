@@ -21,8 +21,7 @@ jobs:
       - name: Make Maven script executable
         run: chmod +x ./mvnw
       - name: Build with Maven
-        # run: mvn -B package --file pom.xml
-        run: ./mvnw package
+        run: mvn -B package --file pom.xml
 
   dockerize-and-push:
     name: Dockerize and push
